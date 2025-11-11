@@ -222,13 +222,6 @@
     // Initialize tasks from local storage
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-    // Load tasks when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('clearCompleted').addEventListener('click', clearCompletedTasks);
-        renderTasks();
-        updateEmptyState();
-    });
-
     // Add task function
     function addTask() {
         const taskText = taskInput.value.trim();
@@ -332,6 +325,7 @@
             emptyState.classList.remove('hidden');
         } else {
             emptyState.classList.add('hidden');
+            clearAllButton.disabled = false;
         }
     }
 
@@ -348,21 +342,22 @@
             renderTasks();
     }
 }
-
-    // Event listeners
+        // Initialize the app when the page loads
     document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('clearAll').addEventListener('click', clearAllTasks);
-    renderTasks();
-    updateEmptyState();
-});
-    addButton.addEventListener('click', addTask);
-    taskInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            addTask();
-        }
+        // Set up event listeners
+        clearAllButton.addEventListener('click', clearAllTasks);
+        addButton.addEventListener('click', addTask);
+        
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Load and render existing tasks
+        renderTasks();
     });
-
 </script>
-
+    
 </body>
 </html>
