@@ -222,6 +222,7 @@
 
     // Load tasks when page loads
     document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('clearCompleted').addEventListener('click', clearCompletedTasks);
         renderTasks();
         updateEmptyState();
     });
