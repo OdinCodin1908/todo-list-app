@@ -162,70 +162,162 @@
 
         <ul id="taskList"></ul>
     </div>
+    
+<script>
+    // Get DOM elements
+    const taskInput = document.getElementById('taskInput');
+    const addButton = document.getElementById('addButton');
+    const taskList = document.getElementById('taskList');
+    const emptyState = document.getElementById('emptyState');
 
-    <script>
-        // Get DOM elements
-        const taskInput = document.getElementById('taskInput');
-        const addButton = document.getElementById('addButton');
-        const taskList = document.getElementById('taskList');
-        const emptyState = document.getElementById('emptyState');
+    // Initialize tasks from local storage
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-        // Add task function
-        function addTask() {
-            const taskText = taskInput.value.trim();
-            
-            if (taskText === '') {
-                alert('Please enter a task!');
-                return;
+    // Load tasks when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        renderTasks();
+        updateEmptyState();
+    });
+
+    // Add task function
+    function addTask() {
+        const taskText = taskInput.value.trim();
+        
+        if (taskText === '') {
+            alert('Please enter a task!');
+            return;
+        }
+
+        // Create new task object
+        const newTask = {
+            id: Date.now(), // Unique ID based on timestamp
+            text: taskText,
+            completed: false,
+            createdAt: new Date().toISOString()
+        };
+
+        // Add to tasks array
+        tasks.push(newTask);
+
+        // Save to local storage and update UI
+        saveTasks();
+        renderTasks();
+
+        // Clear input
+        taskInput.value = '';
+        taskInput.focus();
+    }
+
+    // Delete task function
+    function deleteTask(taskId) {
+        tasks = tasks.filter(task => task.id !== taskId);
+        saveTasks();
+        renderTasks();
+    }
+
+    // Toggle task completion
+    function toggleTaskCompletion(taskId) {
+        tasks = tasks.map(task => {
+            if (task.id === taskId) {
+                return { ...task, completed: !task.completed };
             }
+            return task;
+        });
+        saveTasks();
+        renderTasks();
+    }
 
-            // Hide empty state
-            emptyState.classList.add('hidden');
+    // Save tasks to local storage
+    function saveTasks() {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
 
-            // Create task item
+    // Render all tasks
+    function renderTasks() {
+        taskList.innerHTML = '';
+
+        if (tasks.length === 0) {
+            updateEmptyState();
+            return;
+        }
+
+        tasks.forEach(task => {
             const taskItem = document.createElement('li');
-            taskItem.className = 'task-item';
+            taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+            taskItem.setAttribute('data-task-id', task.id);
+            
+            // Format creation date
+            const createdDate = new Date(task.createdAt);
+            const dateString = createdDate.toLocaleDateString();
             
             taskItem.innerHTML = `
-                <span class="task-text">${taskText}</span>
+                <div class="task-content">
+                    <span class="task-text">${task.text}</span>
+                    <small class="task-date">Added: ${dateString}</small>
+                </div>
                 <div class="task-actions">
-                    <button class="complete-btn">✓</button>
-                    <button class="delete-btn">✕</button>
+                    <button class="complete-btn" title="${task.completed ? 'Mark incomplete' : 'Mark complete'}">
+                        ${task.completed ? '↶' : '✓'}
+                    </button>
+                    <button class="delete-btn" title="Delete task">✕</button>
                 </div>
             `;
 
-            // Add event listeners for the new task
+            // Add event listeners
             const completeBtn = taskItem.querySelector('.complete-btn');
             const deleteBtn = taskItem.querySelector('.delete-btn');
 
-            completeBtn.addEventListener('click', function() {
-                taskItem.classList.toggle('completed');
-            });
+            completeBtn.addEventListener('click', () => toggleTaskCompletion(task.id));
+            deleteBtn.addEventListener('click', () => deleteTask(task.id));
 
-            deleteBtn.addEventListener('click', function() {
-                taskItem.remove();
-                // Show empty state if no tasks left
-                if (taskList.children.length === 0) {
-                    emptyState.classList.remove('hidden');
-                }
-            });
-
-            // Add to list
             taskList.appendChild(taskItem);
-
-            // Clear input
-            taskInput.value = '';
-            taskInput.focus();
-        }
-
-        // Event listeners
-        addButton.addEventListener('click', addTask);
-        
-        taskInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addTask();
-            }
         });
-    </script>
+
+        updateEmptyState();
+    }
+
+    // Update empty state visibility
+    function updateEmptyState() {
+        if (tasks.length === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+        }
+    }
+
+    // Clear all completed tasks
+    function clearCompletedTasks() {
+        if (confirm('Are you sure you want to clear all completed tasks?')) {
+            tasks = tasks.filter(task => !task.completed);
+            saveTasks();
+            renderTasks();
+        }
+    }
+
+    // Add clear completed button to your HTML first, then uncomment this:
+    // document.getElementById('clearCompleted').addEventListener('click', clearCompletedTasks);
+
+    // Event listeners
+    addButton.addEventListener('click', addTask);
+    
+    taskInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            addTask();
+        }
+    });
+
+    // Add some sample tasks if empty (optional)
+    if (tasks.length === 0) {
+        const sampleTasks = [
+            { id: 1, text: 'Welcome to your new todo list!', completed: false, createdAt: new Date().toISOString() },
+            { id: 2, text: 'Click the ✓ to complete a task', completed: false, createdAt: new Date().toISOString() },
+            { id: 3, text: 'Click the ✕ to delete a task', completed: true, createdAt: new Date().toISOString() }
+        ];
+        tasks = sampleTasks;
+        saveTasks();
+        renderTasks();
+    }
+</script>
+
 </body>
 </html>
