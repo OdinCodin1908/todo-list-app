@@ -169,40 +169,26 @@
             border-top: 1px solid #eee;
         }
 
-        #clearCompleted {
+        #clearAll {
             background: #ff6b6b;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-
-        #clearCompleted:hover {
-            background: #ff5252;
-        }
-
-        #clearCompleted:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        #clearAll {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 10px;
-            transition: background 0.3s;
+            font-size: 16px;
+            transition: all 0.3s;
         }
 
         #clearAll:hover {
-            background: #ff3742;
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        #clearAll:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
         }
     </style>
 </head>
@@ -222,8 +208,7 @@
         <ul id="taskList"></ul>
 
         <div class="clear-section">
-            <button id="clearCompleted">Clear Completed Tasks</button>
-            <button id="clearAll">Clear All Tasks</button>
+            <button id="clearAll">Clear All</button>
         </div>
     </div>
     
