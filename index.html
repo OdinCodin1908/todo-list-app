@@ -335,15 +335,6 @@
         }
     }
 
-    // Clear all completed tasks
-    function clearCompletedTasks() {
-        if (confirm('Are you sure you want to clear all completed tasks?')) {
-            tasks = tasks.filter(task => !task.completed);
-            saveTasks();
-            renderTasks();
-        }
-    }
-
     // Clear ALL tasks function
     function clearAllTasks() {
         if (tasks.length === 0) {
@@ -358,26 +349,19 @@
     }
 }
 
-    // Add clear completed button to your HTML first, then uncomment this:
-    // document.getElementById('clearCompleted').addEventListener('click', clearCompletedTasks);
-
     // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('clearAll').addEventListener('click', clearAllTasks);
+    renderTasks();
+    updateEmptyState();
+});
     addButton.addEventListener('click', addTask);
-    
     taskInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             addTask();
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('clearCompleted').addEventListener('click', clearCompletedTasks);
-    document.getElementById('clearAll').addEventListener('click', clearAllTasks); // Add this line
-    renderTasks();
-    updateEmptyState();
-    });
-
-    
 </script>
 
 </body>
